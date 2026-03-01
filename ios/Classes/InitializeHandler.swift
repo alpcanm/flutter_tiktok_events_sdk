@@ -27,21 +27,27 @@ struct InitializeHandler {
 
     static func handle(call: FlutterMethodCall, result: @escaping FlutterResult) {
         guard let args = call.arguments as? [String: Any],
-              let appId = args["appId"] as? String,
               let tiktokAppId = args["tiktokId"] as? String else {
-            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Missing 'appId' or 'tiktokId'", details: nil))
+            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Missing 'tiktokId'", details: nil))
             return
         }
 
         let isDebugMode = args["isDebugMode"] as? Bool ?? false
         let logLevelString = args["logLevel"] as? String ?? "info"
         let logLevel = mapLogLevel(logLevelString)
+        let rawAppId = (args["appId"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let appId = (rawAppId?.isEmpty == false ? rawAppId : Bundle.main.bundleIdentifier) ?? ""
+        let accessToken = (args["accessToken"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
 
         // Configure Logger with verbose mode based on debug mode and log level
         let isVerboseLogging = isDebugMode && TikTokErrorHelper.isVerboseLogging(logLevel)
         Logger.configure(verboseEnabled: isVerboseLogging)
         let options = args["options"] as? [String: Any] ?? [:]
-        let accessToken = options["accessToken"] as? String
+
+        if appId.isEmpty || accessToken == nil || accessToken?.isEmpty == true {
+            result(FlutterError(code: "INVALID_ARGUMENTS", message: "Missing 'accessToken' or invalid app identifier", details: nil))
+            return
+        }
 
         // Validate ATT suppression consent before continuing
         if options["displayAtt"] as? Bool == false {
@@ -57,11 +63,7 @@ struct InitializeHandler {
 
         let ttConfig: TikTokConfig
 
-        if let token = accessToken, !token.isEmpty {
-            ttConfig = TikTokConfig(accessToken: token, appId: appId, tiktokAppId: tiktokAppId)!
-        } else {
-            ttConfig = TikTokConfig(appId: appId, tiktokAppId: tiktokAppId)!
-        }
+        ttConfig = TikTokConfig(accessToken: accessToken!, appId: appId, tiktokAppId: tiktokAppId)!
 
         configureOptions(ttConfig: ttConfig, options: options, isDebugMode: isDebugMode, logLevel: logLevel)
 

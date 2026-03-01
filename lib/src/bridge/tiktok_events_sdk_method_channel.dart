@@ -32,9 +32,10 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
 
   @override
   Future<void> initSdk({
-    required String androidAppId,
+    required String accessToken,
+    String? androidAppId,
     required String tikTokAndroidId,
-    required String iosAppId,
+    String? iosAppId,
     required String tiktokIosId,
     bool isDebugMode = false,
     TikTokAndroidOptions androidOptions = const TikTokAndroidOptions(),
@@ -50,6 +51,7 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
       final result = await methodChannel.invokeMethod(methodName.initialize, {
         'appId': appId,
         'tiktokId': tiktokId,
+        'accessToken': accessToken,
         'isDebugMode': isDebugMode,
         'logLevel': logLevel.name,
         'options': options,
@@ -79,7 +81,8 @@ class MethodChannelTiktokEventsSdk extends TiktokEventsSdkPlatform {
   @override
   Future<void> startTrack({required bool hasConsent}) async {
     try {
-      await methodChannel.invokeMethod('startTrack', {'hasConsent': hasConsent});
+      await methodChannel
+          .invokeMethod('startTrack', {'hasConsent': hasConsent});
       log('TikTok tracking started successfully');
     } catch (e, _) {
       throw TikTokException(

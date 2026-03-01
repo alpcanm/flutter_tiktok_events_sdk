@@ -6,6 +6,18 @@ import AdSupport
 
 struct StartTrackHandler {
     static func handle(call: FlutterMethodCall, result: @escaping FlutterResult) {
+        let args = call.arguments as? [String: Any]
+        let hasConsent = args?["hasConsent"] as? Bool ?? false
+
+        if !hasConsent {
+            result(FlutterError(
+                code: "CONSENT_NOT_GRANTED",
+                message: "Cannot enable tracking: explicit user consent is required.",
+                details: nil
+            ))
+            return
+        }
+
         // Check ATT authorization status before enabling tracking
         let attStatus = ATTrackingManager.trackingAuthorizationStatus
 

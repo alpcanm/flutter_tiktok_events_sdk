@@ -70,10 +70,10 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
                 if (!Platform.isIOS) ...[
                   _buildTextField(
                     controller: _androidAppIdController,
-                    label: 'Android App ID',
-                    hint: 'Enter Android app ID',
+                    label: 'Android App ID (Optional)',
+                    hint: 'Leave empty to use package name',
                     icon: Icons.android_outlined,
-                    isRequired: true,
+                    isRequired: false,
                   ),
                   const SizedBox(height: 12),
                   _buildTextField(
@@ -89,10 +89,10 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
                 if (Platform.isIOS) ...[
                   _buildTextField(
                     controller: _iosAppIdController,
-                    label: 'iOS App ID',
-                    hint: 'Enter iOS app ID',
+                    label: 'iOS App ID (Optional)',
+                    hint: 'Leave empty to use bundle identifier',
                     icon: Icons.apple,
-                    isRequired: true,
+                    isRequired: false,
                   ),
                   const SizedBox(height: 12),
                   _buildTextField(
@@ -106,7 +106,7 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
                 ],
                 _buildTextField(
                   controller: _accessTokenController,
-                  label: 'Access Token (Optional)',
+                  label: 'Access Token',
                   hint: 'Enter access token',
                   icon: Icons.lock_outline,
                   obscureText: !_isAccessTokenVisible,
@@ -595,19 +595,22 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
 
       // Only validate the platform-specific fields based on current platform
       if (isIos) {
-        if (iosAppId.isEmpty || tiktokIosId.isEmpty) {
+        if (tiktokIosId.isEmpty) {
           debugPrint('❌ iOS fields validation failed');
-          _showSnackBar('Please fill in iOS App ID and TikTok iOS ID',
-              isSuccess: false);
+          _showSnackBar('Please fill in TikTok iOS ID', isSuccess: false);
           return;
         }
       } else {
-        if (androidAppId.isEmpty || tikTokAndroidId.isEmpty) {
+        if (tikTokAndroidId.isEmpty) {
           debugPrint('❌ Android fields validation failed');
-          _showSnackBar('Please fill in Android App ID and TikTok Android ID',
-              isSuccess: false);
+          _showSnackBar('Please fill in TikTok Android ID', isSuccess: false);
           return;
         }
+      }
+      if (accessToken.isEmpty) {
+        debugPrint('❌ Access token validation failed');
+        _showSnackBar('Please fill in Access Token', isSuccess: false);
+        return;
       }
 
       debugPrint('✅ Field validation passed');
@@ -619,12 +622,12 @@ class _TikTokEventsPageState extends State<TikTokEventsPage> {
 
       debugPrint('🔵 Calling TikTokService.init...');
       await TikTokService.init(
-        androidAppId: androidAppId,
+        androidAppId: androidAppId.isEmpty ? null : androidAppId,
         tikTokAndroidId: tikTokAndroidId,
-        iosAppId: iosAppId,
+        iosAppId: iosAppId.isEmpty ? null : iosAppId,
         tiktokIosId: tiktokIosId,
         isDebugMode: _isDebugMode,
-        accessToken: accessToken.isNotEmpty ? accessToken : null,
+        accessToken: accessToken,
         logLevel: logLevel,
       );
 

@@ -72,6 +72,7 @@ sealed class TikTokMethod(
             try {
                 val appId = call.argument<String>("appId")
                 val tiktokAppId = call.argument<String>("tiktokId")
+                val accessToken = call.argument<String>("accessToken")
                 val isDebugMode = call.argument<Boolean>("isDebugMode") ?: false
                 val logLevelString: String? = call.argument<String?>("logLevel")
                 val logLevel =
@@ -84,16 +85,23 @@ sealed class TikTokMethod(
                 val options = call.argument<Map<String, Any>>("options") ?: emptyMap()
 
                 // Validate required parameters
-                if (appId.isNullOrEmpty() || tiktokAppId.isNullOrEmpty()) {
+                if (accessToken.isNullOrEmpty() || tiktokAppId.isNullOrEmpty()) {
                     result.emitError(
-                        "Parameters 'appId' or 'tiktokId' were not provided or are invalid.",
+                        "Parameters 'accessToken' or 'tiktokId' were not provided or are invalid.",
                     )
                     return
                 }
 
+                val resolvedAppId =
+                    if (appId.isNullOrBlank()) {
+                        context.packageName
+                    } else {
+                        appId
+                    }
+
                 var ttConfig =
-                    TTConfig(context)
-                        .setAppId(appId)
+                    TTConfig(context, accessToken)
+                        .setAppId(resolvedAppId)
                         .setTTAppId(tiktokAppId)
                         .setLogLevel(logLevel)
 

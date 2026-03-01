@@ -3,34 +3,29 @@ import 'package:tiktok_events_sdk/tiktok_events_sdk.dart';
 
 class TikTokService {
   static Future<void> init({
-    required String androidAppId,
+    String? androidAppId,
     required String tikTokAndroidId,
-    required String iosAppId,
+    String? iosAppId,
     required String tiktokIosId,
     bool isDebugMode = false,
-    String? accessToken,
+    required String accessToken,
     TikTokLogLevel logLevel = TikTokLogLevel.info,
   }) async {
     debugPrint('🔵 TikTokService.init called');
     debugPrint(
-        '🔵 Android App ID: ${androidAppId.isEmpty ? "EMPTY" : androidAppId.substring(0, androidAppId.length > 10 ? 10 : androidAppId.length)}...');
+        '🔵 Android App ID: ${androidAppId?.isEmpty ?? true ? "EMPTY" : "PROVIDED"}');
     debugPrint(
-        '🔵 iOS App ID: ${iosAppId.isEmpty ? "EMPTY" : iosAppId.substring(0, iosAppId.length > 10 ? 10 : iosAppId.length)}...');
-    debugPrint('🔵 Access Token: ${accessToken != null ? "PROVIDED" : "null"}');
-
-    // Build iOS options with access token if provided
-    final iosOptions = TikTokIosOptions(
-      accessToken: accessToken,
-    );
+        '🔵 iOS App ID: ${iosAppId?.isEmpty ?? true ? "EMPTY" : "PROVIDED"}');
+    debugPrint('🔵 Access Token: PROVIDED');
 
     debugPrint('🔵 Calling TikTokEventsSdk.initSdk...');
     await TikTokEventsSdk.initSdk(
+      accessToken: accessToken,
       androidAppId: androidAppId,
       tikTokAndroidId: tikTokAndroidId,
       iosAppId: iosAppId,
       tiktokIosId: tiktokIosId,
       isDebugMode: isDebugMode,
-      iosOptions: iosOptions,
       logLevel: logLevel,
     );
     debugPrint('✅ TikTokEventsSdk.initSdk completed');

@@ -5,16 +5,14 @@ import TikTokBusinessSDK
 struct IdentifyHandler {
 
     static func handle(call: FlutterMethodCall, result: @escaping FlutterResult) {
-        guard let args = call.arguments as? [String: Any],
-            let externalId = args["externalId"] as? String
-        else {
+        guard let args = call.arguments as? [String: Any] else {
             result(
                 FlutterError(
-                    code: "INVALID_ARGUMENTS", message: "Missing 'externalId'", details: nil))
+                    code: "INVALID_ARGUMENTS", message: "Invalid arguments", details: nil))
             return
         }
 
-
+        let externalId = args["externalId"] as? String
         let externalUserName = args["externalUserName"] as? String
         let phoneNumber = args["phoneNumber"] as? String
         let email = args["email"] as? String

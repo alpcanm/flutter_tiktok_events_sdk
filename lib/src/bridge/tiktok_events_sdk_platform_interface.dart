@@ -29,9 +29,10 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
   }
 
   Future<void> initSdk({
-    required String androidAppId,
+    required String accessToken,
+    String? androidAppId,
     required String tikTokAndroidId,
-    required String iosAppId,
+    String? iosAppId,
     required String tiktokIosId,
     bool isDebugMode = false,
     TikTokAndroidOptions androidOptions = const TikTokAndroidOptions(),
@@ -39,6 +40,7 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
     TikTokLogLevel logLevel = TikTokLogLevel.info,
   }) async {
     return _instance.initSdk(
+      accessToken: accessToken,
       androidAppId: androidAppId,
       tikTokAndroidId: tikTokAndroidId,
       iosAppId: iosAppId,
@@ -54,7 +56,7 @@ abstract class TiktokEventsSdkPlatform extends PlatformInterface {
     return _instance.logout();
   }
 
-  Future<void> startTrack({required bool hasConsent})  async {
+  Future<void> startTrack({required bool hasConsent}) async {
     return _instance.startTrack(hasConsent: hasConsent);
   }
 

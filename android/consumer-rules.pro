@@ -1,2 +1,3 @@
 -keep class com.tiktok.** { *; }
 -keep class com.android.billingclient.api.** { *; }
+-keep class androidx.lifecycle.** { *; }

@@ -121,9 +121,10 @@ final androidOptions = TikTokAndroidOptions(
 
 // Pass these options to the initialize method
 await TikTokEventsSdk.initSdk(
-  androidAppId: 'YOUR_ANDROID_APP_ID',
+  accessToken: 'YOUR_ACCESS_TOKEN',
+  androidAppId: 'YOUR_ANDROID_APP_ID', // optional: defaults to package name
   tikTokAndroidId: 'YOUR_TIKTOK_ANDROID_ID',
-  iosAppId: 'YOUR_IOS_APP_ID',
+  iosAppId: 'YOUR_IOS_APP_ID', // optional: defaults to bundle identifier
   tiktokIosId: 'YOUR_TIKTOK_IOS_ID',
   isDebugMode: true,
   logLevel: TikTokLogLevel.debug,

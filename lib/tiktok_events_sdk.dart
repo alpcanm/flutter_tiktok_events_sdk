@@ -17,9 +17,10 @@ export 'src/sdk.dart';
 /// ```dart
 /// // Initialize the SDK
 /// await TiktokEventsSdk.initSdk(
-///   androidAppId: 'your_android_app_id',
+///   accessToken: 'your_access_token',
+///   androidAppId: 'your_android_app_id', // optional
 ///   tikTokAndroidId: 'your_tiktok_android_id',
-///   iosAppId: 'your_ios_app_id',
+///   iosAppId: 'your_ios_app_id', // optional
 ///   tiktokIosId: 'your_tiktok_ios_id',
 ///   isDebugMode: true,
 ///   logLevel: TikTokLogLevel.debug,
@@ -49,6 +50,7 @@ class TikTokEventsSdk {
   /// This method automatically handles hot restart scenarios by checking if
   /// the SDK is already initialized and skipping re-initialization if so.
   ///
+  /// - [accessToken]: Access token / app secret from TikTok Events Manager.
   /// - [androidAppId]: The Android app ID for TikTok SDK.
   /// - [tikTokAndroidId]: The TikTok Android app ID.
   /// - [iosAppId]: The iOS app ID for TikTok SDK.
@@ -58,9 +60,10 @@ class TikTokEventsSdk {
   /// - [iosOptions]: iOS-specific configuration options.
   /// - [logLevel]: The log level for the SDK.
   static Future<void> initSdk({
-    required String androidAppId,
+    required String accessToken,
+    String? androidAppId,
     required String tikTokAndroidId,
-    required String iosAppId,
+    String? iosAppId,
     required String tiktokIosId,
     bool isDebugMode = false,
     TikTokAndroidOptions androidOptions = const TikTokAndroidOptions(),
@@ -73,6 +76,7 @@ class TikTokEventsSdk {
     }
 
     return TiktokEventsSdkPlatform.instance.initSdk(
+      accessToken: accessToken,
       androidAppId: androidAppId,
       tikTokAndroidId: tikTokAndroidId,
       iosAppId: iosAppId,
@@ -101,8 +105,8 @@ class TikTokEventsSdk {
   }
 
   /// SDK will actually start sending app events to TikTok after startTrack() function is called - Use with the disableAutoStart
-  static Future<void> startTrack() async {
-    return TiktokEventsSdkPlatform.instance.startTrack(hasConsent: true);
+  static Future<void> startTrack({bool hasConsent = true}) async {
+    return TiktokEventsSdkPlatform.instance.startTrack(hasConsent: hasConsent);
   }
 
   /// Logs a custom event.
@@ -111,11 +115,7 @@ class TikTokEventsSdk {
   static Future<void> logEvent({
     required TikTokEvent event,
   }) async {
-    try {
-      return TiktokEventsSdkPlatform.instance.logEvent(event: event);
-    } catch (e) {
-      // Handle errors if needed
-    }
+    return TiktokEventsSdkPlatform.instance.logEvent(event: event);
   }
 
   /// Checks if the TikTok SDK is already initialized.

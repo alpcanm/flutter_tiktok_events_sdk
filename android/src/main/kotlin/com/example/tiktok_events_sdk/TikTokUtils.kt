@@ -41,6 +41,7 @@ object TikTokUtils {
             "info" -> TikTokBusinessSdk.LogLevel.INFO
             "warn" -> TikTokBusinessSdk.LogLevel.WARN
             "debug" -> TikTokBusinessSdk.LogLevel.DEBUG
+            "verbose" -> TikTokBusinessSdk.LogLevel.VERBOSE
             else -> TikTokBusinessSdk.LogLevel.NONE
         }
 
