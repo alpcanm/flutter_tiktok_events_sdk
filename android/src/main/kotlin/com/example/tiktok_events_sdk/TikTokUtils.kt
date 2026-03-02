@@ -41,7 +41,10 @@ object TikTokUtils {
             "info" -> TikTokBusinessSdk.LogLevel.INFO
             "warn" -> TikTokBusinessSdk.LogLevel.WARN
             "debug" -> TikTokBusinessSdk.LogLevel.DEBUG
-            "verbose" -> TikTokBusinessSdk.LogLevel.VERBOSE
+            "verbose" ->
+                runCatching {
+                    java.lang.Enum.valueOf(TikTokBusinessSdk.LogLevel::class.java, "VERBOSE")
+                }.getOrElse { TikTokBusinessSdk.LogLevel.DEBUG }
             else -> TikTokBusinessSdk.LogLevel.NONE
         }
 
